@@ -6,7 +6,7 @@ const router = useRouter();
 window.onTelegramAuth = function (user) {
   console.log("Telegram foydalanuvchisi:", user);
 
-  fetch("/api/v1/auth/login", {
+  fetch("https://chat-h80l.onrender.com/api/v1/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -37,7 +37,7 @@ onMounted(() => {
   const token = localStorage.getItem("authToken");
   if (token) {
     console.log("Avtomatik login token bilan:", token);
-    fetch("/api/v1/auth/me", {
+    fetch("https://chat-h80l.onrender.com/api/v1/auth/me", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -59,7 +59,7 @@ function connectWebSocket() {
 
 async function fetchUsers() {
     try {
-        const { data } = await axios.get("/api/v1/users/get-all-users-by-username-search");
+        const { data } = await axios.get("https://chat-h80l.onrender.com/api/v1/users/get-all-users-by-username-search");
         users.value = data.content.map((u) => ({ ...u, messages: [] }));
         if (users.value.length > 0) activeChat.value = users.value[0];
     } catch (err) {

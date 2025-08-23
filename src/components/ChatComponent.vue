@@ -47,7 +47,7 @@ function sendMessage() {
     const token = localStorage.getItem("accessToken");
 
     stompClient.publish({
-        destination: "/app/chat.sendMessage",
+        destination: "/api/chat.sendMessage",
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -98,17 +98,7 @@ async function fetchUsers() {
     }
 }
 
-async function getAssignUsers() {
-    try {
-        const { data } = await axios.get("https://chat-h80l.onrender.com/api/v1/chats/users")
-        assignUsers.value = data
-    } catch {
-
-    }
-}
-
 onMounted(() => {
-    fetchUsers();
     getAssignUsers()
     connectWebSocket();
 });
@@ -122,14 +112,6 @@ onMounted(() => {
             <ul>
                 <li v-for="chat in users" :key="chat.id"
                     :class="['chat-item', activeChat?.id === chat.id ? 'active' : '']" @click="openChat(chat)">
-                    <div class="chat-name">{{ chat.firstName }}</div>
-                    <div class="chat-last">{{ chat.userName }}</div>
-                </li>
-            </ul>
-
-            <h1>Boglangan Chatlar</h1>
-            <ul>
-                <li v-for="chat in assignUsers" :key="chat.id">
                     <div class="chat-name">{{ chat.firstName }}</div>
                     <div class="chat-last">{{ chat.userName }}</div>
                 </li>

@@ -62,7 +62,9 @@ function connectWebSocket() {
         console.log("WebSocket connected!");
         stompClient.subscribe("/user/queue/messages", (msg) => {
             const message = JSON.parse(msg.body);
+            console.log(message);
             const chat = users.value.find((c) => c.id === message.chatId);
+            console.log(chat)
             if (chat) chat.messages.push({ from: "him", text: message.content });
         });
     };

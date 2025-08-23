@@ -27,6 +27,7 @@ function openChat(chat) {
             params: { userId: chat.id },
             headers: {
                 Authorization: `Bearer ${token}`,
+                "content-type": "application/json"
             },
         }
     )
@@ -50,6 +51,7 @@ function sendMessage() {
         destination: "/api/chat.sendMessage",
         headers: {
             Authorization: `Bearer ${token}`,
+            "content-type": "application/json"
         },
         body: JSON.stringify({
             chatId: chatInfo.value.id,
@@ -64,7 +66,8 @@ function connectWebSocket() {
     stompClient = new StompJs.Client({
         webSocketFactory: () => new SockJS("https://chat-h80l.onrender.com/chat"),
         connectHeaders: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            "content-type": "application/json"
         },
         debug: (str) => console.log(str),
         reconnectDelay: 2000,

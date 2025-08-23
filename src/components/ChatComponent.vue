@@ -6,6 +6,7 @@ import * as StompJs from "@stomp/stompjs";
 
 const users = ref([]);
 const activeChat = ref(null);
+const chatInfo = ref(null)
 const newMessage = ref("");
 let stompClient = null;
 const token = localStorage.getItem("accessToken")
@@ -19,7 +20,8 @@ function openChat(chat) {
             Authorization: `Bearer ${token}`
         }
     })
-        .then(() => {
+        .then((response) => {
+            chatInfo.value = response
             alert("Chat ulandi UserId yuborildi")
         })
         .catch((postErr) => {
@@ -41,7 +43,7 @@ function sendMessage() {
             Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-            chatId: activeChat.value.id,
+            chatId: chatInfo.value.id,
             content: newMessage.value,
         }),
     });

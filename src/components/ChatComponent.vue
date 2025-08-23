@@ -5,29 +5,38 @@ import SockJS from "sockjs-client";
 import * as StompJs from "@stomp/stompjs";
 
 const users = ref([]);
+const assignUsers = ref([])
 const activeChat = ref(null);
-const chatInfo = ref(null)
+const chatInfoMap = ref(new Map());
 const newMessage = ref("");
 let stompClient = null;
-const token = localStorage.getItem("accessToken")
+const token = localStorage.getItem("accessToken");
 
 function openChat(chat) {
     activeChat.value = chat;
 
-    axios.post("https://chat-h80l.onrender.com/api/v1/chats/private-chat", null, {
-        params: { userId: activeChat.value.id },
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
-        .then((response) => {
-            chatInfo.value = response
-            alert("Chat ulandi UserId yuborildi")
-        })
-        .catch((postErr) => {
-            alert("Chat id yuborilmadi error:", postErr)
-        })
+    if (chatInfoMap.value.has(chat.id)) {
+        console.log("Bu chat uchun post oldin qilingan.");
+        return;
+    }
 
+    axios.post(
+        "https://chat-h80l.onrender.com/api/v1/chats/private-chat",
+        null,
+        {
+            params: { userId: chat.id },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    )
+        .then((response) => {
+            chatInfoMap.value.set(chat.id, response.data);
+            alert("Chat ulandi va UserId yuborildi");
+        })
+        .catch((err) => {
+            console.error("Chat id yuborilmadi error:", err);
+        });
 }
 
 function sendMessage() {
@@ -89,6 +98,15 @@ async function fetchUsers() {
     }
 }
 
+async function getAssignUsers() {
+    try {
+        const { data } = await axios.get("https://chat-h80l.onrender.com/api/v1/chats/users")
+        assignUsers.value = data
+    } catch {
+
+    }
+}
+
 onMounted(() => {
     fetchUsers();
     connectWebSocket();
@@ -103,6 +121,14 @@ onMounted(() => {
             <ul>
                 <li v-for="chat in users" :key="chat.id"
                     :class="['chat-item', activeChat?.id === chat.id ? 'active' : '']" @click="openChat(chat)">
+                    <div class="chat-name">{{ chat.firstName }}</div>
+                    <div class="chat-last">{{ chat.userName }}</div>
+                </li>
+            </ul>
+
+            <h1>Boglangan Chatlar</h1>
+            <ul>
+                <li v-for="chat in assignUsers" :key="chat.id">
                     <div class="chat-name">{{ chat.firstName }}</div>
                     <div class="chat-last">{{ chat.userName }}</div>
                 </li>

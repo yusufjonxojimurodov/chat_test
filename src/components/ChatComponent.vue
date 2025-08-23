@@ -21,7 +21,7 @@ function openChat(chat) {
         }
     })
         .then((response) => {
-            chatInfo.value = response
+            chatInfo.value = response.data
             alert("Chat ulandi UserId yuborildi")
         })
         .catch((postErr) => {
@@ -94,7 +94,6 @@ onMounted(() => {
     connectWebSocket();
 });
 </script>
-
 
 <template>
     <div class="container">

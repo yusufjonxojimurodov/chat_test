@@ -54,6 +54,9 @@ function sendMessage() {
 function connectWebSocket() {
     stompClient = new StompJs.Client({
         webSocketFactory: () => new SockJS("https://chat-h80l.onrender.com/chat"),
+        connectHeaders: {
+            Authorization: `Bearer ${token}`
+        },
         debug: (str) => console.log(str),
         reconnectDelay: 2000,
     });

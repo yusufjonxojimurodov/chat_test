@@ -11,6 +11,17 @@ let stompClient = null;
 
 function openChat(chat) {
     activeChat.value = chat;
+
+    axios.post("https://chat-h80l.onrender.com/api/v1/chats/private-chat", null, {
+        params: { userId: activeChat.value.id }
+    })
+        .then(() => {
+            alert("Chat ulandi UserId yuborildi")
+        })
+        .catch((postErr) => {
+            alert("Chat id yuborilmadi error:", postErr)
+        })
+
 }
 
 function sendMessage() {
@@ -23,7 +34,7 @@ function sendMessage() {
     stompClient.publish({
         destination: "/app/chat.sendMessage",
         headers: {
-            Authorization: `Bearer ${token}`, // 🔑 tokenni headerda berish
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
             chatId: activeChat.value.id,

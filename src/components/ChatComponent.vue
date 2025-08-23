@@ -5,39 +5,29 @@ import SockJS from "sockjs-client";
 import * as StompJs from "@stomp/stompjs";
 
 const users = ref([]);
-const assignUsers = ref([])
 const activeChat = ref(null);
-const chatInfoMap = ref(new Map());
+const chatInfo = ref(null)
 const newMessage = ref("");
 let stompClient = null;
-const token = localStorage.getItem("accessToken");
+const token = localStorage.getItem("accessToken")
 
 function openChat(chat) {
     activeChat.value = chat;
 
-    if (chatInfoMap.value.has(chat.id)) {
-        console.log("Bu chat uchun post oldin qilingan.");
-        return;
-    }
-
-    axios.post(
-        "https://chat-h80l.onrender.com/api/v1/chats/private-chat",
-        null,
-        {
-            params: { userId: chat.id },
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "content-type": "application/json"
-            },
+    axios.post("https://chat-h80l.onrender.com/api/v1/chats/private-chat", null, {
+        params: { userId: activeChat.value.id },
+        headers: {
+            Authorization: `Bearer ${token}`
         }
-    )
+    })
         .then((response) => {
-            chatInfoMap.value.set(chat.id, response.data);
-            alert("Chat ulandi va UserId yuborildi");
+            chatInfo.value = response
+            alert("Chat ulandi UserId yuborildi")
         })
-        .catch((err) => {
-            console.error("Chat id yuborilmadi error:", err);
-        });
+        .catch((postErr) => {
+            alert("Chat id yuborilmadi error:", postErr)
+        })
+
 }
 
 function sendMessage() {
@@ -48,10 +38,9 @@ function sendMessage() {
     const token = localStorage.getItem("accessToken");
 
     stompClient.publish({
-        destination: "/api/chat.sendMessage",
+        destination: "/app/chat.sendMessage",
         headers: {
             Authorization: `Bearer ${token}`,
-            "content-type": "application/json"
         },
         body: JSON.stringify({
             chatId: chatInfo.value.id,
@@ -66,8 +55,7 @@ function connectWebSocket() {
     stompClient = new StompJs.Client({
         webSocketFactory: () => new SockJS("https://chat-h80l.onrender.com/chat"),
         connectHeaders: {
-            Authorization: `Bearer ${token}`,
-            "content-type": "application/json"
+            Authorization: `Bearer ${token}`
         },
         debug: (str) => console.log(str),
         reconnectDelay: 2000,
@@ -102,7 +90,7 @@ async function fetchUsers() {
 }
 
 onMounted(() => {
-    fetchUsers()
+    fetchUsers();
     connectWebSocket();
 });
 </script>

@@ -99,7 +99,7 @@ async function fetchUsers() {
 }
 
 onMounted(() => {
-    getAssignUsers()
+    fetchUsers()
     connectWebSocket();
 });
 </script>

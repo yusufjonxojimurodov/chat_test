@@ -8,12 +8,16 @@ const users = ref([]);
 const activeChat = ref(null);
 const newMessage = ref("");
 let stompClient = null;
+const token = localStorage.getItem("accessToken")
 
 function openChat(chat) {
     activeChat.value = chat;
 
     axios.post("https://chat-h80l.onrender.com/api/v1/chats/private-chat", null, {
-        params: { userId: activeChat.value.id }
+        params: { userId: activeChat.value.id },
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
     })
         .then(() => {
             alert("Chat ulandi UserId yuborildi")
